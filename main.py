@@ -81,7 +81,7 @@ def token_required(f):
 # Routes
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('register'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -178,7 +178,11 @@ def update_todo(todo_id):
         flash('To-Do item updated successfully!', 'success')
 
     return redirect(url_for('todo', token=request.args.get('token')))
-
+@app.route("/logout")
+@token_required
+def logout():
+    session.pop("user")
+    return redirect(url_for("login"))
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)
