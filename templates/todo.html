@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="alert alert-info">
+        <ul class="mb-0">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+    <div class="container mt-5">
+        <h2>Welcome, {{ current_user }}!</h2>
+        <h3>To-Do List:</h3>
+        <ul>
+            {% for todo in todo_list %}
+            <div class="d-flex align-items-center mb-2" style="flex-direction: row;">
+                {{ todo.item }}
+                <form action="/todo/update/{{ todo.id }}" method="POST" class="ms-3">
+                    {{ form.csrf_token }}
+                    {{ form.item(class="form-control d-inline-block") }}
+                    
+                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                </form>
+                <form action="/todo/delete/{{ todo.id }}" method="POST" class="ms-3">
+                    {{ form.csrf_token }}
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </ul>
+        <h3>Add New Item:</h3>
+        <form action="{{url_for('todo')}}" method="POST">
+            {{ form.csrf_token }}
+            <div class="mb-3">
+                {{ form.item.label(class="form-label") }}
+                {{ form.item(class="form-control") }}
+            </div>
+            
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        {% if error_message %}
+        <div class="alert alert-danger mt-3" role="alert">
+            {{ error_message }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
